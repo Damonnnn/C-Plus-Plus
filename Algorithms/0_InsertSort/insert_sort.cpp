@@ -1,7 +1,6 @@
-// insert_sort.cpp : 定义控制台应用程序的入口点。
+// insert_sort.cpp
 //
 
-#include "stdafx.h"
 
 #include <stdlib.h>  
 #include <stdio.h>  
@@ -31,6 +30,7 @@ int main()
 	for (int i = 0; i < 6; ++i) {
 		printf("%d ", x[i]);
 	}
-	system("pause");
+	printf("\n");
+	return 0;
 }
 
