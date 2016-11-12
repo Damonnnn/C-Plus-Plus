@@ -1,4 +1,4 @@
-// quick_sort.cpp : 定义控制台应用程序的入口点。
+// quick_sort.cpp :
 //
 
 #include "stdafx.h"

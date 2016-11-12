@@ -35,7 +35,7 @@ void bubble_sort_v2(int unsorted[], int len)
 {
 	int i,j;
 	for(i = 0; i < len - 1; ++i) {
-		for(j = i; j < len -1; ++j) {
+		for(j = 0; j < (len -1 - i); ++j) {
 			if(unsorted[j] > unsorted[j + 1]) {
             	unsorted[j] = unsorted[j] ^ unsorted[j + 1]; // use XOR to exchange
                 unsorted[j + 1] = unsorted[j + 1] ^ unsorted[j];
@@ -47,16 +47,17 @@ void bubble_sort_v2(int unsorted[], int len)
 
 int main()
 {
-	int x[] = { 6, 2, 4, 1, 4,5, 9 };
+	int x[] = { 5, 10, 4, 1, 4,5, 9 };
 	bubble_sort(x,7);
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 7; ++i) {
 		printf("%d ", x[i]);
 	}
 	printf("\n");
-	bubble_sort_v2(x, 7);
-	for (int i = 0; i < 6; ++i) {
+	int x1[] = { 5, 10, 4, 1, 4,5, 9 };
+	bubble_sort_v2(x1, 7);
+	for (int i = 0; i < 7; ++i) {
 
-		printf("%d ", x[i]);
+		printf("%d ", x1[i]);
 
 	}
 	printf("\n");

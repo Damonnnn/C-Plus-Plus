@@ -63,12 +63,12 @@ int main()
 		printf("%d ", array[i]);
 	}
 	printf("\n");
-
-	selectSortV2(array, size);
+	int array2[] = { 3, 1, 15, 11, 89, 5 };
+	selectSortV2(array2, size);
 
 	for (int i = 0; i < size; ++i)
 	{
-		printf("%d ", array[i]);
+		printf("%d ", array2[i]);
 	}
 	printf("\n");
 }
