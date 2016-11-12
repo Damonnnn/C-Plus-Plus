@@ -8,6 +8,7 @@
 /*
  * with each loop of this function, a smallest number will be selected.
  * and the smallest number will have the index of i.
+ * In fact, this is NOT bubble sort, this is select sort.
  */
 void bubble_sort(int unsorted[],int len)
 {
