@@ -3,8 +3,8 @@
 #include<vector>
 
 using namespace std;
-template<typename T>
 
+template<typename T>
 void print_elements(const T& coll, const string& str)
 {
 	cout << str << ": ";
