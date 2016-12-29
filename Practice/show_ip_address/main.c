@@ -24,7 +24,7 @@
 			IPv4:101.98.9.24
 			IPv4:101.98.9.34
 			IPv6:2a00:1450:4017:801::2004
-* So, we can understand why the addrinfo is a linked list.
+* So, we can understand why the addrinfo is a linked list.  
 
 */
 
