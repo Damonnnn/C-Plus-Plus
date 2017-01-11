@@ -57,7 +57,6 @@ public:
 	afx_msg void OnBnClickedButtonExit();
 	afx_msg void OnBnClickedButtonClearAll();
 	CDateTimeCtrl m_dateCtrl;
-	afx_msg void OnBnClickedButton3();
 	int my_year;
 	int my_month;
 	int my_day;
@@ -65,4 +64,5 @@ public:
 	afx_msg void OnBnClickedButtonMoveDown();
 	afx_msg void OnBnClickedButtonBack();
 	afx_msg void OnBnClickedButtonForward();
+	afx_msg void OnDtnDatetimechangeDatetimepicker(NMHDR *pNMHDR, LRESULT *pResult);
 };

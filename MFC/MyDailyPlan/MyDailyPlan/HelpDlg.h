@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CHelpDlg 对话框
@@ -20,4 +21,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
 	DECLARE_MESSAGE_MAP()
+public:
+	CEdit mEditHelp;
+	afx_msg void OnBnClickedButtonThanks();
 };

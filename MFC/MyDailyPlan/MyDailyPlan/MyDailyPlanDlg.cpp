@@ -81,11 +81,11 @@ BEGIN_MESSAGE_MAP(CMyDailyPlanDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_HELP, &CMyDailyPlanDlg::OnBnClickedButtonHelp)
 	ON_BN_CLICKED(IDC_BUTTON_EXIT, &CMyDailyPlanDlg::OnBnClickedButtonExit)
 	ON_BN_CLICKED(IDC_BUTTON_CLEAR_ALL, &CMyDailyPlanDlg::OnBnClickedButtonClearAll)
-	ON_BN_CLICKED(IDC_BUTTON3, &CMyDailyPlanDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON_Move_Up, &CMyDailyPlanDlg::OnBnClickedButtonMoveUp)
 	ON_BN_CLICKED(IDC_BUTTON_Move_Down, &CMyDailyPlanDlg::OnBnClickedButtonMoveDown)
 	ON_BN_CLICKED(IDC_BUTTON_BACK, &CMyDailyPlanDlg::OnBnClickedButtonBack)
 	ON_BN_CLICKED(IDC_BUTTON_FORWARD, &CMyDailyPlanDlg::OnBnClickedButtonForward)
+	ON_NOTIFY(DTN_DATETIMECHANGE, IDC_DATETIMEPICKER, &CMyDailyPlanDlg::OnDtnDatetimechangeDatetimepicker)
 END_MESSAGE_MAP()
 
 
@@ -121,6 +121,9 @@ BOOL CMyDailyPlanDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	CString title;
+	title.Format(_T("MyDailyPlan -- 自己写下的计划，哭着也得完成"));//在标题栏动态显示title的值
+	this->SetWindowText(title);
 	//init the list control
 	CRect rect;
 	daily_plan_list.GetClientRect(&rect);
@@ -623,39 +626,6 @@ void CMyDailyPlanDlg::OnBnClickedButtonClearAll()
 }
 
 
-void CMyDailyPlanDlg::OnBnClickedButton3()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CString record_file_name;
-	CTime m_date;
-	CFileFind   finder;
-	m_dateCtrl.GetTime(m_date);
-
-	//save current data
-	save_list_to_file();
-	//update the time
-	my_year = m_date.GetYear();
-	my_month = m_date.GetMonth();
-	my_day = m_date.GetDay();
-
-	//judge if file exist
-	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
-	BOOL if_file_exist = finder.FindFile(record_file_name);
-	if (!if_file_exist)
-	{
-		//MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
-		daily_plan_list.DeleteAllItems();
-		daily_plan_done_list.DeleteAllItems();
-		return;
-	}
-
-	
-	//init data from file
-	init_list_from_file();
-	
-}
-
-
 void CMyDailyPlanDlg::OnBnClickedButtonMoveUp()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -829,4 +799,42 @@ void CMyDailyPlanDlg::OnBnClickedButtonForward()
 
 	//init data from file
 	init_list_from_file();
+}
+
+
+void CMyDailyPlanDlg::OnDtnDatetimechangeDatetimepicker(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMDATETIMECHANGE pDTChange = reinterpret_cast<LPNMDATETIMECHANGE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	//MessageBox(_T("日期改变啦！"), _T("Warning!!!"), MB_ICONEXCLAMATION);
+
+	// TODO: 在此添加控件通知处理程序代码
+	CString record_file_name;
+	CTime m_date;
+	CFileFind   finder;
+	m_dateCtrl.GetTime(m_date);
+
+	//save current data
+	save_list_to_file();
+	//update the time
+	my_year = m_date.GetYear();
+	my_month = m_date.GetMonth();
+	my_day = m_date.GetDay();
+
+	//judge if file exist
+	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
+	BOOL if_file_exist = finder.FindFile(record_file_name);
+	if (!if_file_exist)
+	{
+		//MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
+		daily_plan_list.DeleteAllItems();
+		daily_plan_done_list.DeleteAllItems();
+		return;
+	}
+
+
+	//init data from file
+	init_list_from_file();
+
+	*pResult = 0;
 }
