@@ -71,5 +71,35 @@
     <Image Include="res\MyDailyPlan_v.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bitmap3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Desktop\left_arrow.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Desktop\right_arrow.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\left_arrow.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\right_arrow.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\MyDailyPlan.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Desktop\MyDailyPlan.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\desktop\icon1.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="..\..\..\..\..\Desktop\2017-01-11_120219.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

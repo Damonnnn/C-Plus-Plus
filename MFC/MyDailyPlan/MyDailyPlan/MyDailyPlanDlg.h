@@ -63,4 +63,6 @@ public:
 	int my_day;
 	afx_msg void OnBnClickedButtonMoveUp();
 	afx_msg void OnBnClickedButtonMoveDown();
+	afx_msg void OnBnClickedButtonBack();
+	afx_msg void OnBnClickedButtonForward();
 };

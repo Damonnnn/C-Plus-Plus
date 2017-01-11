@@ -210,9 +210,19 @@
     <None Include="res\MyDailyPlan.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\Desktop\2017-01-11_120219.bmp" />
+    <Image Include="..\..\..\..\..\desktop\icon1.ico" />
+    <Image Include="..\..\..\..\..\Desktop\left_arrow.bmp" />
+    <Image Include="..\..\..\..\..\Desktop\MyDailyPlan.bmp" />
+    <Image Include="..\..\..\..\..\Desktop\right_arrow.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bitmap3.bmp" />
     <Image Include="res\icon1.ico" />
+    <Image Include="res\left_arrow.bmp" />
+    <Image Include="res\MyDailyPlan.bmp" />
     <Image Include="res\MyDailyPlan.ico" />
     <Image Include="res\MyDailyPlan_v.ico" />
+    <Image Include="res\right_arrow.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

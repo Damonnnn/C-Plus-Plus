@@ -84,6 +84,8 @@ BEGIN_MESSAGE_MAP(CMyDailyPlanDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMyDailyPlanDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON_Move_Up, &CMyDailyPlanDlg::OnBnClickedButtonMoveUp)
 	ON_BN_CLICKED(IDC_BUTTON_Move_Down, &CMyDailyPlanDlg::OnBnClickedButtonMoveDown)
+	ON_BN_CLICKED(IDC_BUTTON_BACK, &CMyDailyPlanDlg::OnBnClickedButtonBack)
+	ON_BN_CLICKED(IDC_BUTTON_FORWARD, &CMyDailyPlanDlg::OnBnClickedButtonForward)
 END_MESSAGE_MAP()
 
 
@@ -144,6 +146,16 @@ BOOL CMyDailyPlanDlg::OnInitDialog()
 	my_day = m_date.GetDay();
 
 	init_list_from_file();
+
+	//set the button bit map
+	HBITMAP   hBitmap;
+
+	hBitmap = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_LEFT));
+	((CButton *)GetDlgItem(IDC_BUTTON_BACK))->SetBitmap(hBitmap);
+	hBitmap = LoadBitmap(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_RIGHT));
+	((CButton *)GetDlgItem(IDC_BUTTON_FORWARD))->SetBitmap(hBitmap);
+	
+	//IDB_BITMAP1为位图资源ID ，IDC_BT_BYTE为按钮ID
 
 
 
@@ -618,20 +630,26 @@ void CMyDailyPlanDlg::OnBnClickedButton3()
 	CTime m_date;
 	CFileFind   finder;
 	m_dateCtrl.GetTime(m_date);
-	//judge if file exist
-	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
-	BOOL if_file_exist = finder.FindFile(record_file_name);
-	if (!if_file_exist)
-	{
-		MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
-		return;
-	}
+
 	//save current data
 	save_list_to_file();
 	//update the time
 	my_year = m_date.GetYear();
 	my_month = m_date.GetMonth();
 	my_day = m_date.GetDay();
+
+	//judge if file exist
+	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
+	BOOL if_file_exist = finder.FindFile(record_file_name);
+	if (!if_file_exist)
+	{
+		//MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
+		daily_plan_list.DeleteAllItems();
+		daily_plan_done_list.DeleteAllItems();
+		return;
+	}
+
+	
 	//init data from file
 	init_list_from_file();
 	
@@ -720,4 +738,95 @@ void CMyDailyPlanDlg::OnBnClickedButtonMoveDown()
 		// update the selection focus
 		daily_plan_list.SetItemState(nId + 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
 	}
+}
+
+
+void CMyDailyPlanDlg::OnBnClickedButtonBack()
+{
+	/*
+	昨天：
+	CTime m_Date = CTime::GetCurrentTime() - CTimeSpan(1, 0, 0, 0);
+	明天
+	CTime m_Date = CTime::GetCurrentTime() + CTimeSpan(1, 0, 0, 0);
+	*/
+	// TODO: 在此添加控件通知处理程序代码
+	CString record_file_name;
+	CTime m_date;
+	CFileFind   finder;
+	
+	m_dateCtrl.GetTime(m_date);
+	//save current data
+	save_list_to_file();
+	
+	// the day before current day
+	m_date = m_date - CTimeSpan(1, 0, 0, 0);
+
+	//update the time
+	my_year = m_date.GetYear();
+	my_month = m_date.GetMonth();
+	my_day = m_date.GetDay();
+	//update timer control
+	m_dateCtrl.SetTime(&m_date);
+
+	//judge if file exist
+	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
+	BOOL if_file_exist = finder.FindFile(record_file_name);
+	
+	if (!if_file_exist)
+	{
+		//MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
+		daily_plan_list.DeleteAllItems();
+		daily_plan_done_list.DeleteAllItems();
+		return;
+	}
+
+	
+	//init data from file
+	init_list_from_file();
+}
+
+
+void CMyDailyPlanDlg::OnBnClickedButtonForward()
+{
+
+	/*
+	昨天：
+	CTime m_Date = CTime::GetCurrentTime() - CTimeSpan(1, 0, 0, 0);
+	明天
+	CTime m_Date = CTime::GetCurrentTime() + CTimeSpan(1, 0, 0, 0);
+	*/
+	// TODO: 在此添加控件通知处理程序代码
+	CString record_file_name;
+	CTime m_date;
+	CFileFind   finder;
+
+	m_dateCtrl.GetTime(m_date);
+	//save current data
+	save_list_to_file();
+
+	// the day after current day
+	m_date = m_date + CTimeSpan(1, 0, 0, 0);
+
+	//update the time
+	my_year = m_date.GetYear();
+	my_month = m_date.GetMonth();
+	my_day = m_date.GetDay();
+	//update timer control
+	m_dateCtrl.SetTime(&m_date);
+
+
+
+	//judge if file exist
+	record_file_name.Format(_T("record_%d-%d-%d.ini"), m_date.GetYear(), m_date.GetMonth(), m_date.GetDay());
+	BOOL if_file_exist = finder.FindFile(record_file_name);
+	if (!if_file_exist)
+	{
+		//MessageBox(_T("您所选择的日期没有记录"), _T("Warning!!!"), MB_ICONEXCLAMATION);
+		daily_plan_list.DeleteAllItems();
+		daily_plan_done_list.DeleteAllItems();
+		return;
+	}
+
+	//init data from file
+	init_list_from_file();
 }
