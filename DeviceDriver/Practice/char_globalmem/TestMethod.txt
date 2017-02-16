@@ -1,0 +1,2 @@
+echo "hello world!" > /dev/globalmem
+cat /dev/globalmem  # you will see "hello world!"
