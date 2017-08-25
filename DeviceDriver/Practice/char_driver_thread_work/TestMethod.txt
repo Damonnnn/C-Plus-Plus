@@ -1,0 +1,12 @@
+The whole steps:
+1. make                                  #build the module
+2. insmod globalmem.ko                   #insert module
+2. insmod globaldevice.ko                #insert module
+3. cat /proc/devices                     #know about the device number
+4. mknod /dev/globalmem  c  254  0       #make a new device file for the module.
+5. echo "hello world!" > /dev/globalmem  #test the driver.
+6. cat /dev/globalmem                    #you will see "hello world!"
+7. rmmod globalmem                       #delete the module.
+8. rm /dev/globalmem                     #delete the device file.
+9. ls /sys/bus/platform/drivers/         #check if globalfifo exists.
+10. ls /sys/device/platform/             #check if globalfifo/driver exists.
