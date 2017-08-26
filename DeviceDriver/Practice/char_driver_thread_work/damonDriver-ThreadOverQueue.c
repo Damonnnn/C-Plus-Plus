@@ -61,7 +61,7 @@ void my_delay(unsigned int msec)
 int dbg_thread(void *data)
 {
 	struct sched_param param;
-	int loop = 500000000, i;
+	int loop = 20, i;
 	param.sched_priority = 0;//the highest
 	sched_setscheduler(current, SCHED_FIFO, &param);
 	printk("%10u-dbg:this is dbg_thread \n", dbg_index++);
@@ -93,7 +93,7 @@ int dbg_thread(void *data)
 
 void tx_work_queue(struct work_struct *work)
 {
-	int loop = 2, i;
+	int loop = 500000000, i;
 	printk("%10u-dbg:this is tx_work_queue\n", dbg_index++);
 	//mdelay(50);//busy wait
 	for(i = 0; i < loop; i++) {
@@ -117,7 +117,7 @@ void test_timer_fn(unsigned long arg)
 		wake_up_process(dbg_task);
 		flag = 1;
 	}
-	mod_timer(&dbg_timer, jiffies + msecs_to_jiffies(10));//timeout after 1000ms
+	mod_timer(&dbg_timer, jiffies + msecs_to_jiffies(10000));//timeout after 1000ms
 	printk("%10u-dbg:test timer over\n",dbg_index++);
 }
 

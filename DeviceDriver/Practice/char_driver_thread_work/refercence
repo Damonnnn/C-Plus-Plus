@@ -1,0 +1,16 @@
+http://blog.chinaunix.net/uid-26720059-id-3201680.html
+http://blog.csdn.net/u011308691/article/details/46489939
+http://blog.chinaunix.net/uid-25324849-id-3198055.html
+http://blog.csdn.net/zzsfqiuyigui/article/details/51061434
+http://bbs.chinaunix.net/thread-4142687-1-1.html
+	-# cat /proc/328/stat 
+	-# cat /proc/328/wchan
+
+
+内核３中线程：
+	-FF:FiFO
+	-RR:Round Robin
+	-TS:Others
+其中：
+	-workqueue属于TS
+	
