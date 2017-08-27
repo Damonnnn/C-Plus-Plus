@@ -1,5 +1,0 @@
-1. make
-2. make inmod
-3. make test
-4. ./test
-5. run another terminal, key: echo "Hello World" > /dev/globalfifo  #you will see "receive a signal from globalfifo,signalnum:%d\n",signum"

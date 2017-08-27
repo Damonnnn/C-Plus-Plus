@@ -1,6 +1,0 @@
-1. make
-2. make inmod
-3. make test
-4. ./test # you will see "Poll monitor:can be written"
-5. run another terminal, key: echo "Hello World" > /dev/globalfifo  #you will see both the "Poll monitor:can be read" and the "Poll monitor:can be written"
-
