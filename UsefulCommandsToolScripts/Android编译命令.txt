@@ -1,0 +1,46 @@
+android 7.0
+	第1次使用android 7.0编译环境须先执行下面脚本（下次再编就不需要了）：
+	$ sh /usr/local/bin/Jack/jack.sh
+	or
+	source /usr/local/bin/change_to_v7.sh
+android 6.0\5.1\5.0
+	$ source /usr/local/bin/change_to_v5-6.sh
+android 4.4
+	source /usr/local/bin/change_to_v4.sh
+	
+#====================================================================================	
+#How to Compile
+	第一步，环境设置：
+		source build/envsetup.sh
+		lunch xxx
+	编译整个工程
+		kheader
+		make
+	编译u-boot
+		make bootloader
+	编译bootimage
+		make bootimage
+	编译system
+		make systemimage
+	编译WLAN driver
+		make sprdwl_ng.ko
+	编译wpa_supplicant
+		make wpa_supplicant
+		
+#lunch后project的选择：
+	sprdroid7.0_trunk_k44_pike2_dev-->22. sp7700_fpga-userdebug
+	sprdroid6.0_trunk-->55. sp9832a_3h10_marlin2-userdebug
+	
+
+#====================================================================================
+#解决通过adb insmod，出现insmod: failed to load sprdwl_ng.ko: Exec format error的问题。
+#原因是kernel不匹配。
+#解决方法：
+1. 进入手机setting->关于手机，查看kernel的版本：3.10.65-00027-g462103a。那么kernel对于的git的commit历史版本前几个字符为：462103a（g后面的数字）
+2. $cd kernel
+3. git log #查看log历史
+   /462103a #查找具体的历史，并复制全部commit字串。
+4. $git reset --hard 462103a688422e6f72dfdb287bb602c12b38c82e #回退kernel版本。
+5. make bootimage
+6. make sprdwl_ng.ko
+7. 把ko再push到手机里，insmod

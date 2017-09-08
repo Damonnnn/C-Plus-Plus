@@ -1,0 +1,57 @@
+#====================================================================================
+#文件/夹相关
+cat /proc/pid/status	              #查看某个pid运行内存大小
+grep "pattern"-ir ./ 	              #搜索当前目录下的pattern字符
+find ./ -name "file"	              #在当前目录查找file文件
+find ./ -name "folder" -type d        #查找某个文件夹
+#====================================================================================
+#网络相关
+ifconfig eth0 192.168.7.104           #配置eth0静态IP
+route add default gw 192.168.7.1      #手动添加路由表
+#====================================================================================
+#进程相关
+ps -aux | grep mosqui                 #查看某个程序/服务的状态
+#====================================================================================
+#service服务相关
+sudo service --status-all             #查看所有服务
+sudo service mosquitto status         #查看某个具体服务的状态
+sudo service mosquitto stop           #停止某个服务
+sudo service mosquitto start          #启动某个服务
+sudo service mosquitto restart        #重启某个服务
+#====================================================================================
+#压缩解压缩相关
+tar -czvf /tmp/etc.tar.gz /etc        #打包后，以 gzip 压缩,后缀.tar.gz
+tar -cjvf /tmp/etc.tar.bz2 /etc       #打包后，以 bzip2 压缩.后缀tar.bz2
+tar -xzvf /tmp/etc.tar.gz             #将etc.tar.gz 文件解压在当前目录
+tar -xjvf /tmp/etc.tar.bz2            #将etc.tar.bz2 文件解压在当前目录
+tar -xJvf /tmp/etc.tar.bz2            #将etc.tar.bz2 文件解压在当前目录
+#====================================================================================
+#查看文件/文件夹大小
+du -sh                                #查看当前文件夹大小，不显示子文件夹
+du -sh *                              #分别查看当前文件夹下的所有文件夹的大小
+du -Sh                                #查看所有文件夹大小。
+du -sh a.tar                          #查看a.tar的size
+ls                                    #也可以查看文件的size
+df -h                                 #查看各个挂接点的消耗情况。
+#====================================================================================
+#server间的copy
+scp -r user.name@10.6.2.14:/home3/jingxiang.li/.vim ../jingxiang/  #将server端拷贝到本地。
+scp -r  ~/.ssh  username@servername:~/                             #将本地拷贝到服务器端。
+sshfs zhiming.yang@shand01:~  ~/server                             #将server端挂载至本地文件夹。
+#====================================================================================
+#ftp 命令
+ftp user@ftpdomain.com or IP          #使用用户名和密码登录，进入ftp命令行模式
+	-ftp>ls                           #列出目录
+	-ftp>cd                           #切换目录
+	-ftp>lcd /../yourdirectoryname    #设置ftp工作目录，文件将会被下载到这里。
+	-ftp>get xxx.rar                  #下载文件到/../yourdirectoryname
+	-ftp>mget *.rar                   #下载所有的rar文件到/../yourdirectoryname
+	-ftp>put /path/file               #上传file到ftp的目录，即cd到的目录。
+	-ftp>mput /path/*file             #上传多个file到ftp的目录，即cd到的目录。
+#====================================================================================
+#控制台log
+echo 1 > /proc/sys/kernel/printk    #减少log
+
+
+
+ps -eo pid,tid,class,rtprio,ni,pri,psr,pcpu,stat,wchan:14,comm

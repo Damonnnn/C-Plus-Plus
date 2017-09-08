@@ -1,0 +1,101 @@
+#====================================================================================
+#放弃本地抓服务器：
+git fetch --all
+git reset --hard origin/<branch_name>
+git fetch --all && git reset --hard origin/chaos_calmer #也可以不要origin
+git reset --hard HEAD^ 撤销commit
+#====================================================================================
+#一次check in的完整流程：
+git add -A
+git commit -s
+		#/*********************************************
+		#	Bug #727150 test how to check in code
+		#	
+		#	[root cause  ] paho.mqtt-sn.embedded-c test
+		#	[changes     ] packages
+		#	[side effects] no
+		#	[self test   ]<board, Test cases summary>:
+		#	[change_type ] bringup --> sprd_chip_support
+		#	[reviewers   ]
+        #
+		#**********************************************/
+git push ssh://damon.li@review.source.spreadtrum.com:29418/openwrt/openwrt HEAD:refs/for/chaos_calmer
+
+#====================================================================================
+#修改某次check in：
+git fetch ssh://damon.li@review.source.spreadtrum.com:29418/openwrt/openwrt refs/changes/94/364794/1 && git cherry-pick FETCH_HEAD #找到gerrit页面，点击右边的download，复制cherry pick那一行。
+git add -A
+git commit --amend
+git push ssh://damon.li@review.source.spreadtrum.com:29418/openwrt/openwrt HEAD:refs/for/chaos_calmer
+
+#====================================================================================
+#patch相关操作，refer to http://www.jianshu.com/p/e5d801b936b6
+git reset --hard <commit-id>   #回退到相应的commit-ID
+git apply --check ~/MyDoc/MyTasks/WifiDriverStudy/0001-Bug-647782-PIKE2-AP-SIPC-Enable.patch #测试path是否可用。如果可用，则不会有任何log。
+git apply ~/MyDoc/MyTasks/WifiDriverStudy/0001-Bug-647782-PIKE2-AP-SIPC-Enable.patch   #应用patch
+git status #查看修改的文件。
+git diff #查看修改的内容。
+
+
+
+
+
+
+
+
+#====================================================================================
+#其他常用命令
+git checkout -b sprdroid_own_copyright_n --track remotes/korg/sprdroid_own_copyright_n
+
+#====================================================================================
+#OpenWrt clone的流程：
+git clone gitadmin@gitmirror.spreadtrum.com:openwrt/openwrt -b chaos_calmer && scp -p -P 29418 damon.li@review.source.spreadtrum.com:hooks/commit-msg openwrt/.git/hooks/
+cd openwrt && git submodule init && git submodule update
+echo CONFIG_TARGET_sprd=y > .config; echo CONFIG_TARGET_sprd_sp9832=y >> .config; echo CONFIG_TARGET_sprd_sp9832_iot-gateway=y >> .config
+make defconfig
+make V=s -j4
+#====================================================================================
+#sprdroid_own_copyright_n clone和check in的流程：
+git clone ssh://damon.li@review.source.spreadtrum.com:29418/vendor/sprd/modules/wcn -b sprdroid_own_copyright_n
+git add -A
+git commit -s
+	#Bug #744442  wcn: wifi: delete unnecessary free-buf code while error handling
+	#[root cause  ]delete unnecessary free-buf code while error handling
+	#[changes     ]sipc.c
+	#[side effects]no
+	#[self test   ]<board, Test cases summary>
+	#[change_type ] bringup --> sprd_chip_support
+	#[tag_product ] common
+	#[reviewers   ] jingxiang.li
+
+	#Signed-off-by: damon.li <damon.li@spreadtrum.com>
+    ###########################################################
+	#Bug #740932 dts: sp9820e: add wifi dts for sp9820
+
+	#[root cause  ] add wifi dts config for sp9820e
+	#[changes     ] sp9820e-1h10-native.dts 
+	#[side effects] No
+	#[self test   ]:open wifi & connect
+	#[download normally]:Yes
+	#[power on/off normally]:Yes
+	#[do common repository/branch inspection]:Yes
+	#[is there dependence]:No
+	#[confirm dependent commit]:No
+	#[board]:sp9820e-1h10-native
+	#[test case]:NA
+	#[reviewers   ] jessie.xin
+	#[change_type ] bringup --> sprd_chip_support
+	#[tag_product ] common
+
+	#Signed-off-by: damon.li <damon.li@spreadtrum.com>
+
+	############################################################
+
+	
+
+gitdir=$(git rev-parse --git-dir); scp -p -P 29418 damon.li@review.source.spreadtrum.com:hooks/commit-msg ${gitdir}/hooks/
+git commit --amend
+git push ssh://damon.li@10.0.0.160:29418/vendor/sprd/modules/wcn.git HEAD:refs/for/sprdroid_own_copyright_n
+
+
+#====================================================================================

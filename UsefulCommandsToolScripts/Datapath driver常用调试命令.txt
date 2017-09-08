@@ -1,0 +1,39 @@
+#关闭kernel过多的log：
+	- echo 1 > /proc/sys/kernel/printk
+
+#临时命令：
+	- echo 1 > /proc/wcn_btwf/start    #启动BTWF的CM4,***为随机内容,暂时未作字符串识别处理
+	- iwnpi wlan0 get_rate
+	- iwnpi wlan0 lna_status
+
+#查看sblock是否分配成功：
+	- cat sys/kernel/debug/sipc/sblock
+#查看 credit信息
+	- cat /sys/kernel/debug/ieee80211/phy0/sprdwl_wifi/sdioinfo
+
+#Iperf测试网络带宽的原理是client端尽最大速度向server端发送数据，测试过程中的带宽。
+	- TCP:
+		client: iperf -c xx.xx.xx.xx -i1
+		server: iperf -s -i1
+	- UDP:
+		client: iperf -c xx.xx.xx.xx -b20M -i1 -t20  #最大62M. -t20 means 20s
+		server: iperf -s -u -i1
+
+#安卓系统抓log
+	- logcat > /data/log.txt &
+
+#抓取kernel log
+	- 静态： dmesg
+		> dmesg -c 清空缓冲区
+	- 动态： cat /proc/kmsg 
+	
+#Data Path log关键词
+	- sprdwl|ieee|wlan|p2p|drop #all logs
+	- get_msg_buf|tx_work_queue #all delayed message
+	- WLAN Driver #probe
+	- sprdwl_remove # remove
+	- Exception | Call trace # see if other exception occur
+	
+	
+#抓包分析
+	- ERP Infomation->ERP Flags中的Barker Preamble Mode为1，表示AP(wap_supplicant)组的包，为0，表示CP组的包。

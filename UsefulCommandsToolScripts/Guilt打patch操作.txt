@@ -1,0 +1,30 @@
+#======================================================================================
+#add a new patch
+make package/feeds/packages/paho.mqtt-sn.embedded-c/{clean,prepare} V=s QUILT=1
+cd build_dir/target-arm_cortex-a7+vfp_glibc-2.19_eabi/paho.mqtt-sn.embedded-c-1.1.0
+quilt push -a
+quilt new 010-add_client_test_code.patch
+quilt add <file>          #一定要先add file，即便这个file不存在。这样你增加file或者修改file，quilt才可以tracking到。
+quilt edit xxx.c
+quilt diff
+quilt refresh
+cd ../../../
+make package/feeds/packages/paho.mqtt-sn.embedded-c/update V=s
+make package/feeds/packages/paho.mqtt-sn.embedded-c/{clean,compile} package/index V=s
+
+
+#======================================================================================
+#edit an existing patch
+make package/feeds/packages/paho.mqtt-sn.embedded-c/{clean,prepare} V=s QUILT=1
+cd build_dir/target-arm_cortex-a7+vfp_glibc-2.19_eabi/paho.mqtt-sn.embedded-c-1.1.0
+quilt series                               #List the patches available:
+quilt push 010-add_client_test_code.patch  #Advance to the patch that needs to be edited
+quilt add <file>                           #一定要先add file，即便这个file不存在。这样你增加file或者修改file，quilt才可以tracking到。
+quilt edit xxx.c
+quilt files                                #Check which files are to be included in the patch:
+quilt diff
+quilt refresh
+cd ../../../
+make package/feeds/packages/paho.mqtt-sn.embedded-c/update V=s
+ 
+

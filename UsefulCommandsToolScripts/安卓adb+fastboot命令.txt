@@ -1,0 +1,63 @@
+ADB = Android Debug Bridge
+#====================================================================================
+#常用命令adb
+$adb devices  #list the devices
+$adb root     #get root rights
+$adb remount  #remount filesystem
+$adb shell mount -o rw,remount / #重新挂载根目录文件系统为rw访问权限
+$adb push D:\sprdwl_ng.ko /system/damon  #push file to phone
+$adb pull /data/ylog/ylog/kernel/ D:\Logs\  #pull file from phone
+$adb shell #enter shell mode.
+$exit #exit shell mode
+
+
+#常用命令fastboot
+fastboot flash 分区名 烧写文件
+adb reboot-bootloader #enter fastboot mode.
+fastboot flash boot boot.img
+fastboot reboot
+#====================================================================================
+#各种命令
+查看版本
+	#ADB 的安装这里就不多说了，输入以下命令有如下提示就证明你环境ok，否则自行网上搜索解决下。
+	$ adb version
+查看连接设备
+	#输入以下命令可以查询已连接的设备与模拟器：
+	$ adb devices
+安装一个apk，执行以下命令：
+	$adb install <apkfile>
+	#如: adb install demo.apk
+	#如果不是当前目录，则后面要跟路径名：
+	$adb install /Users/storm/temp/demo.apk
+	#保留数据和缓存文件，重新安装apk：
+	$adb install -r demo.apk
+	#安装apk到sd卡：
+	$adb install -s demo.apk	
+卸载
+	#直接卸载：
+	$adb uninstall <package>
+	#如：adb uninstall com.stormzhang.demo
+	#卸载 app 但保留数据和缓存文件：
+	$adb uninstall -k com.stormzhang.demo
+启动/停止 Server
+	#一般来说，下面两个命令基本不会用到，因为只要设备连接正确，会自动启动 adb server 的，不过大家也需要知道这俩命令：
+	#启动 adb server ：
+	$adb start-server
+	#停止 adb server ：
+	$adb kill-server
+重启
+	$adb reboot
+获取root权限
+	$adb root
+拷贝文件到手机
+	$adb push /sourcepath/filename /destinationpath/filename
+	#adb push c:\hosts /etc/
+从终端拷贝一个文件到pc端
+	$adb pull /sourcepath/filename /destinationpath/filename
+	#adb pull /etc/hosts c:\
+启动shell命令终端
+	$adb shell
+重新加载文件系统，使得文件系统可写
+	$adb remount
+
+	

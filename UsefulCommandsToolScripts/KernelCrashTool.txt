@@ -1,0 +1,66 @@
+#基础
+	- http://people.redhat.com/anderson/crash_whitepaper/#WHY_CRASH
+	- 数字如果没有字母，默认为10进制，有字母，默认为16进制（0x不必要）。也可以用0x作前缀强制为16进制。
+	- echo c > /proc/sysrq-trigger #手动出发crash dump
+ 
+#启动
+	- cat sysdump.core* >sysdump
+	- ./crash_arm64 -m phys_offset=0x80000000 ./vmlinux 1/sysdum --cpus 4
+
+#help
+	- help                   #显示支持哪些命令
+	- help xxx               #显示命令xxx的man page
+	- crash -h ascii         #命令行显示man page
+
+#常用命令
+	- alias                  #显示内建的缩写命令
+	- set scroll off/on      #关闭/打开卷屏功能
+	- set                    #显示当前context
+	- set pid/task address   #切换context。参数可以为pid进程号，也可以是task的地址。
+	- set -c cpu_num         #显示cpu_num上的context
+	- set -p                 #显示panic task的context
+	- rd                     #读取当前context下的内存。
+	
+#Symbolic Display of Kernel Text or Data
+	- struct                 #可以显示某个结构体的定义，或者结构体变量的详细信息。help struct查看更多。
+	- union                  #与struct类似，help union 查看更多。
+	- *                      #可以用来替代struct/union的命令。
+	- p/pd/px                #显示变量或者表达式的值。可以计算表达式。help p查看更多。
+	- whatis                 #显示数据类型
+	- dis -xl symbol/addr    #反汇编，并且可以显示行号。
+#System state
+	- bt                     #显示当前context的back-trace，即call stack
+	- files [pid]            #显示pid所在context打开的所有文件
+	- irq                    #查看irq信息
+	- kmem                   #查看内存信息
+	- log                    #查看kernel message buffer chronologically
+	- ps                     #打印进程信息。
+	- runq	                 #Displays list of tasks on the run queue.
+	- sig	                 #A context-sensitive command which displays a task's signal information
+	- task                   #显示task结构体信息。
+	- timer                  #显示timer相关信息。
+	- waitq                  #显示waitq相关信息。
+#Utility functions
+	- ascii                  #将数字转换为ascii码
+	- search	             #Searches a range of user or kernel memory space for given value, with an optional "don't care" bit-mask argument.
+	- rd -32 symbol count    #读内存
+	- wr -32 addr value      #写内存, 在dump file不可用。
+#Session Control Commands
+	- foreach                #好用的命令。
+	
+#====================================================================================================================
+#====================================================================================================================
+#====================================================================================================================
+#解释dump
+- PANIC: "Oops: 0002"        #显示为一个kernel page error。
+- Not tainted：表示kernel没有安装其他模块。
+- exception RIP: default_idle+61
+	+ RIP： is the instruction pointer，指向程序内存地址。
+	+ default_idle： 出先crash的函数
+	+ 61：函数内的偏移
+- CS: 0010
+	+ CS：code segment
+	+ 最右边的数字为偶数，表示执行在kernel mode，为奇数，执行在user mode。
+- ps命令显示所有task，其中active的task标记为">";[]括起来的是kernel threads。
+
+

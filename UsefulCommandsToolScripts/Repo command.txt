@@ -1,0 +1,257 @@
+#====================================================================================
+#repo 介绍
+	Android 使用 Git 作为代码管理工具，开发了 Gerrit 进行代码审核以便更好的对代码进行集中式管理，还开发了 Repo 命令行工具，对 Git 部分命令封装，将百多个 Git 库有效的进行组织
+#git Vs repo
+	1. Git：Git是一个开源的分布式版本控制系统，用以有效、高速的处理从很小到非常大的项目版本管理。
+    2. Repo: Repo是谷歌用Python脚本写的调用git的一个脚本。主要是用来下载、管理Android项目的软件仓库（也就是说Repo是用来管理给Git管理的一个个仓库的）
+#Repo 三部曲：对于研发，知道这三个足够。
+	repo sync/repo start/repo upload
+#====================================================================================
+1 repo常用指令
+repo init -u gitserver:manifests.git -b <branch>    下载repo并克隆manifest
+repo sync                                           下载代码
+repo start xxx --all 	                            创建特性分支
+repo branch                                         查看当前项目代码所在的分支
+cd .repo/manifests/; git branch -a                  查看所有的分支
+cd **/**/**; git branch -a                          查看某个项目所在的所有分支
+repo abandon 分支名                                 删除本地分支
+
+repo init -b sprdroid6.0_trunk                                    这三句话实现切换分支
+repo sync (not needed if your local copy is up to date)
+repo start sprdroid6.0_trunk --all 
+
+#举例
+repo init -u gitadmin@gitmirror.spreadtrum.com:android/platform/manifest.git -b sprdroid7.0_trunk_k44
+repo sync -j32
+repo start --all master
+#常用的repo仓库
+	sprdroid6.0_trunk
+	sprdroid7.0_trunk_k44
+	sprdroid7.0_trunk_k44_pike2_dev
+	sprdroid8.0_pdk_sharkle_bringup_dev
+	sprdroido_pdk
+	sprdlinux4.4
+
+
+#获取某一个具体分支：sprdroid_own_copyright_n
+git clone ssh://damon.li@review.source.spreadtrum.com:29418/vendor/sprd/modules/wcn/ -b sprdroid_own_copyright_n
+
+#一次完整的check-in流程
+	#=============================================================================================
+	#reference: http://wikiserver.spreadtrum.com/Projects/WIFI/wiki/submit_changes
+	1. indent -linux -il0 -nbbo file1.c file2.c ...   Or    scripts/Lindent file1.c file2.c ...
+	2. git add file1.c file2.c
+	3. git commit -s  #之后全部选择1->1->1
+		#====================================
+		#	Bug #740932 dts: sp9820e: add wifi dts for sp9820e
+		#
+		#	[root cause  ]add wifi dts config for sp9820e
+		#	[changes     ]sp9820e-1h10-native.dts 
+		#	[side effects]n
+		#	[self test   ]<board, Test cases summary>:sp9832e_1h10
+		#	[reviewers   ]jessie.xin
+		#	[change_type ] bringup --> sprd_chip_support
+		#	[tag_product ] common
+		#
+		#	Signed-off-by: damon.li <damon.li@spreadtrum.com>
+		#
+		#####################################################################################
+		#	Bug #744461 wcn: wifi: Add free skb code in sipc.c
+	
+		#	[root cause  ] Add free skb code in sipc.c
+		#	[changes     ] sipc.c
+		#	[side effects] No
+		#	[self test   ]:open wifi & connect
+		#	[download normally]:Yes
+		#	[power on/off normally]:Yes
+		#	[do common repository/branch inspection]:Yes
+		#	[is there dependence]:No
+		#	[confirm dependent commit]:No
+		#	[board]:sp9832e-1h10-native
+		#	[test case]:NA
+		#	[reviewers   ] jingxiang.li
+		#	[change_type ] bringup --> sprd_chip_support
+		#	[tag_product ] common
+	
+		#	Signed-off-by: damon.li <damon.li@spreadtrum.com>
+	
+		#====================================
+	4. git format-patch -1
+	5. kernel/scripts/checkpatch.pl --strict file.patch
+	6. repo upload vendor/sprd/modules/wcn/ --destination sprd-8.0    # or use: git push origin local_branch:refs/for/remote_branch
+	7. repo upload kernel/ --destination sprdlinux4.4 #only for sprdroido_pdk kernel commit
+	#=============================================================================================
+
+
+
+
+
+
+
+#====================================================================================
+2 repo常用指令详解
+2.1 repo init (下载repo并克隆manifest)
+Usage：
+	repo init –u URL [OPTIONS]
+Options:
+         -u:指定一个URL，其连接到一个maniest仓库
+         -m:在manifest仓库中选择一个xml文件
+         -b:选择一个maniest仓库中的一个特殊的分支
+命令repo init 要完成如下操作：
+         完成repo工具的完整下载，执行的repo脚本只是引导程序
+         克隆清单库manifest.git (地址来自于-u 参数)
+         克隆的清单库位于manifest.git中，克隆到本地.repo/manifests.清单.repo/manifest.xml只是符号链接，它指向.repo/manifests/default.xml
+         如果manifests中有多个xml文件，repo init 可以任意选择其中一个，默认选择是default.xml
+Example：
+	repo init  -u git://172.16.1.31/manifest.git
+	在android2.3.4目录下面出现了.repo文件夹。
+	repo  init  -u git://172.16.1.31/manifest.git –m android.xml
+	选择的是android.xml里面的配置，.repo/manifest.xml便指向.repo/manifests/android.xml
+2.2 repo sync(下载代码)
+Usage:
+	repo sync [<project>…]
+用于参照清单文件.repo/manifest.xml克隆并同步版本库。如果某个项目版本库尚不存在，则执行repo sync 命令相当于执行git clone，如果项目版本库已经存在，则相当于执行下面的两条指令：
+         git remote update  相当于对每一个remote源执行了fetch操作
+         git rebase origin/branch  针对当前分支的跟踪分支执行rebase操作。
+Example:
+	repo sync
+	也可以选择克隆其中的一个项目:
+	repo sync platform/build
+2.3 repo start(创建并切换分支)
+Usage:
+	repo start  <newbranchname> [--all | <project>…]
+    刚克隆下来的代码是没有分支的,repo start实际是对git checkout –b 命令的封装。为指定的项目或所有项目（若使用—all参数），以清单文件中为设定的分支，创建特性分支。这条指令与git checkout –b 还是有很大的区别的，git checkout –b 是在当前所在的分支的基础上创建特性分支，而repo start是在清单文件设定分支的基础上创建特性分支。
+Example：
+	repo start  stable  --all
+	假设清单文件中设定的分支是gingerbread-exdroid-stable，那么执行以上指令就是对所有项目，在gingerbread-exdroid-stable的基础上创建特性分支stable。
+	repo start  stable  platform/build platform/bionic
+	假设清单文件中设定的分支是gingerbread-exdroid-stable，那么执行以上指令就是对platform/build、platform/bionic项目，在gingerbread-exdroid-stable的基础上创建特性分支stable
+    
+2.4 repo checkout(切换分支)
+Usage：
+	repo checkout <branchname>  [<project>…]
+	实际上是对git checkout 命令的封装，但不能带-b参数，所以不能用此命令来创建特性分支。
+Example：
+	repo checkout crane-dev 
+	repo checkout crane-dev  platform/build  platform/bionic
+2.5 repo branches(查看分支)
+Usage：
+	repo branches [<project>…]
+Example：
+	repo branches 
+	repo branches platform/build platform/bionic
+ 
+2.6 repo diff(查看工作区文件差异)
+Usage：
+	repo diff [<project>…]
+   实际是对git diff 命令的封装,用于分别显示各个项目工作区下的文件差异。
+Example：
+	repo diff                            ---查看所有项目
+	repo diff platform/build platform/bionic  ---只查看其中两个项目
+2.7 repo stage(把文件添加到index表中)
+    实际是对git add --interactive命令的封装、用于挑选各个项目工作区中的改动以加入暂存区。
+Usage：
+	repo stage -i [<project>…]
+    -i代表git add --interactive命令中的--interactive，给出个界面供用户选择
+2.8 repo prune(删除已经合并分支)
+   实际上是对git branch –d命令的封装，该命令用于扫面项目的各个分支，并删除已经合并的分支，用法如下：
+Usage：
+	repo prune [<project>…]
+ 
+2.9 repo abandon(删除指定分支)
+   实际上是对git branch –D 命令的封装，用法如下：
+Usage：
+	repo abandon <branchname> [<project>…]
+2.10 repo status(查看文件状态)
+	实际上是对git diff-index、git diff-filse命令的封装，同时显示暂存区的状态和本地文件修改的状态
+$repo/repo status platform/bionic
+以上的实例输出显示了platform/bionic项目分支的修改状态
+》         每个小节的首行显示羡慕名称，以及所在分支的名称
+》         第一个字母表示暂存区的文件修改状态
+         -:没有改变
+         A:添加（不在HEAD中，在暂存区中）
+         M：修改（在HEAD中，在暂存区中，内容不同）
+         D:删除（在HEAD中，不在暂存区）
+         R：重命名（不在HEAD中，在暂存区，路径修改）
+         C：拷贝（不在HEAD中，在暂存区，从其他文件拷贝）
+         T：文件状态改变（在HEAD中，在暂存区，内容相同）
+         U：未合并，需要冲突解决
+》         第二个字母表示工作区文件的更改状态
+         -：新/未知（不在暂存区，在工作区）
+         m：修改（在暂存区，在工作区，被修改）
+         d：删除（在暂存区，不在工作区）
+》         两个表示状态的字母后面，显示文件名信息。如果有文件重名还会显示改变前后的文件名及文件的相似度
+2.11 repo remote(设置远程仓库)
+Usage:
+	repo remote add <remotename>  <url> [<project>…] 
+	repo remote rm <remotename>  [<project>…]
+Example:
+	repo remote add org ssh://172.16.1.31/git_repo
+	这个指令是根据xml文件添加的远程分支，方便于向服务器提交代码，执行之后的build目录下看到新的远程分支org：
+
+	删除远程仓库：
+	$repo  remote  rm  org
+2.12 repo push
+repo push org
+   这是新添加的指令，用于向服务器提交代码，使用方法：
+Usage：
+	repo push <remotename> [--all |<project>…]
+	repo会自己查询需要向服务器提交的项目并提示用户。
+2.13repo forall
+Usage：
+	repo forall [<project>…] –c <command>
+	迭代器，可以在所有指定的项目中执行同一个shell指令
+Options：
+         -c:后面所带的参数着是shell指令
+         -p:在shell指令输出之前列出项目名称
+         -v:列出执行shell指令输出的错误信息
+additional environment variables:
+         REPO_PROJECT:指定项目的名称
+         REPO_PATH:指定项目在工作区的相对路径
+         REPO_REMOTE:指定项目远程仓库的名称
+         REPO_LREV:指定项目最后一次提交服务器仓库对应的哈希值
+         REPO_RREV:指定项目在克隆时的指定分支，manifest里的revision属性
+另外，如果-c后面所带的shell指令中有上述环境变量，则需要用单引号把shell指令括起来。
+2.13.1 添加的环境变量
+ repo forall –c ‘echo $REPO_PROJECT’
+ $repo forall  –c ‘echo $REPO_PATH’
+2.13.2 merge(合并多个分支)
+    把所有项目多切换到master分支，执行以下指令将topic分支合并到master分支
+	repo forall –p –c git merge topic	 
+2.13.3 tag(打标签)
+	在所有项目下打标签
+	repo forall –c git tag crane-stable-1.6
+2.13.4 remote (设置远程仓库)
+	引用环境变量REPO_PROJECT添加远程仓库：
+	repo forall –c ‘git remote add korg ssh://xiong@172.16.31/$REPO_PROJECT.git’
+	删除远程仓库：
+	repo forall –c git remote add korg
+2.13.5 branch(创建特性分支)
+	repo forall –c git branch crane-dev
+	repo forall –c git checkout –b crane-dev
+3 repo的额外命令集
+3.1 repo grep
+	相当于对git grep 的封装，用于在项目文件中进行内容查找
+3.2 repo manifest
+	显示manifest文件内容
+Usage:
+	repo manifest –o android.xml
+3.3 repo version
+	显示repo的版本号
+3.4 repo upload
+repo upload相当于git push，但是又有很大的不同。它不是将版本库改动推送到克隆时的远程服务器，而是推送到代码审核服务器(Gerrit软件架设)的特殊引用上，使用SSH协议。代码审核服务器会对推送的提交进行特殊处理，将新的提交显示为一个待审核的修改集，并进入代码审查流程，只有当审核通过后，才会合并到官方正式的版本库中。
+因为全志没有代码审核服务器，所以这条指令用不到。
+Usage：
+	repo upload [--re --cc] {[<project>]… | --replace <project>}
+Options:
+         -h, --help:显示帮助信息
+         -t:发送本地分支名称到Gerrit代码审核服务器
+         --replace:发送此分支的更新补丁集
+         --re=REVIEWERS:要求指定的人员进行审核
+         --cc=CC:同时发送通知到如下邮件地址
+3.5 repo download
+主要用于代码审核者下载和评估贡献者提交的修订
+Usage
+	repo download {project change [patchset]}…
+3.6 repo selfupdate
+    用于repo自身的更新
